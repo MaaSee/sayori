@@ -7,15 +7,14 @@ import numpy as np
 import holidays
 
 from typing import List, Dict, Optional, Union
-from .models import TimeToStop, RequestParameter
-from .loader import Feed
+from .models import TimeToStop, RequestParameter, Feed
 
 class StopAccessStates:
     def __init__(self, from_stop_ids: List[str], input_date: str, input_secs: int) -> None:
         self.from_stop_ids: List[str] = from_stop_ids
         self.input_date: datetime.datetime = datetime.datetime.fromisoformat(input_date)
         self.input_secs: int = input_secs
-        self.departure_isoweekday: int = self.get_isoweekday(self.input_date)
+        self.input_date_isoweekday: int = self.get_isoweekday(self.input_date)
         self.time_to_stops: Dict[str, TimeToStop] = {origin_stop_id: TimeToStop() for origin_stop_id in from_stop_ids}
         self.already_processed_xfers: List[str] = []
         self.just_updated_stops: List[str] = from_stop_ids.copy()
@@ -79,7 +78,6 @@ class StopAccessStates:
         # initialize return object
         did_update = False
         if stop_id in self.get_all_stops():
-            # print(f"{trip_id}:{self.get_time_to_reach(stop_id)}>{time_to_reach}")
             if self.get_time_to_reach(stop_id) > time_to_reach:
                 # update the stop access attributes
                 self.update_time_to_reach(stop_id, time_to_reach)
@@ -108,13 +106,16 @@ def stop_times_for_kth_trip(
     available_trip_ids: Optional[List[str]]
 ) -> None:
     # get service_id 
-    available_trips = feed.get_available_trips(stop_state.departure_isoweekday)
+    available_trips = feed.get_available_trips(stop_state.input_date_isoweekday)
     trip_stop_pairings = {}
     for ref_stop_id in stop_state.just_updated_stops:
         # find all trips already related to this stop
         associated_trips: List[str] = stop_state.get_preceding(ref_stop_id)
         # find all qualifying trips assocaited with this stop
-        related_trips = feed.stop_times[(feed.stop_times["stop_id"] == ref_stop_id) * (feed.stop_times["departure_time"] >= stop_state.input_secs)]["trip_id"]
+        if is_reverse_search:
+            related_trips = feed.stop_times[(feed.stop_times["stop_id"] == ref_stop_id) * (feed.stop_times["arrival_time"] <= stop_state.input_secs)]["trip_id"]
+        else:
+            related_trips = feed.stop_times[(feed.stop_times["stop_id"] == ref_stop_id) * (feed.stop_times["departure_time"] >= stop_state.input_secs)]["trip_id"]
         # find potential trips intersecting available or usable trip_ids
         if isinstance(available_trip_ids, list):
             potential_trips = set(related_trips) & set(available_trip_ids)
@@ -141,7 +142,10 @@ def stop_times_for_kth_trip(
 
         # find all stop ids that are in this stop ordering and pick last on route path
         target_stops = stop_times_sub[np.isin(stop_times_sub["stop_id"], stop_ids)]
-        target_stops = target_stops[target_stops["stop_sequence"].argsort()]
+        if is_reverse_search:
+            target_stops = target_stops[target_stops["stop_sequence"].argsort()[::-1]]    
+        else:
+            target_stops = target_stops[target_stops["stop_sequence"].argsort()]
 
         # get the "hop on" point
         from_here = target_stops[-1]       
@@ -151,18 +155,31 @@ def stop_times_for_kth_trip(
         # how long it took to get to the stop so far (0 for start node)
         baseline_cost = stop_state.get_time_to_reach(ref_stop_id)
         # get all following stops
-        stop_times_after = stop_times_sub[stop_times_sub["stop_sequence"] >= from_here["stop_sequence"]]
+        if is_reverse_search:
+            stop_times_after = stop_times_sub[stop_times_sub["stop_sequence"] <= from_here["stop_sequence"]]
+        else:
+            stop_times_after = stop_times_sub[stop_times_sub["stop_sequence"] >= from_here["stop_sequence"]]
 
         # for all following stops, calculate time to reach
-        for arrive_time, arrive_stop_id, arrive_stop_sequence in zip(stop_times_after["arrival_time"], stop_times_after["stop_id"], stop_times_after["stop_sequence"]):
+        for departure_time, arrive_time, arrive_stop_id, arrive_stop_sequence in zip(stop_times_after["departure_time"], stop_times_after["arrival_time"], stop_times_after["stop_id"], stop_times_after["stop_sequence"]):
             # time to reach is diff from start time to arrival (plus any baseline cost)
-            arrive_time_adjusted = arrive_time - stop_state.input_secs + baseline_cost
-            # get current routing path and combine preceding path
-            current_routing_path = stop_times_after[(stop_times_after["stop_sequence"] <= arrive_stop_sequence)]["stop_id"].tolist()
+            if is_reverse_search:
+                arrive_time_adjusted = stop_state.input_secs - departure_time + baseline_cost
+                # get current routing path and combine preceding path
+                current_routing_path = stop_times_after[(stop_times_after["stop_sequence"] >= arrive_stop_sequence)]["stop_id"].tolist()                                 
+            else:
+                arrive_time_adjusted = arrive_time - stop_state.input_secs + baseline_cost
+                # get current routing path and combine preceding path
+                current_routing_path = stop_times_after[(stop_times_after["stop_sequence"] <= arrive_stop_sequence)]["stop_id"].tolist()
+            
+            # append current routing path to stopstate
             if len(stop_state.get_routing_path(ref_stop_id)) == 0:
                 routing_path = stop_state.get_routing_path(ref_stop_id) + current_routing_path
             else:
-                routing_path = stop_state.get_routing_path(ref_stop_id) + current_routing_path[1:]
+                if is_reverse_search:
+                    routing_path = current_routing_path[:-1] + stop_state.get_routing_path(ref_stop_id)  
+                else:
+                    routing_path = stop_state.get_routing_path(ref_stop_id) + current_routing_path[1:]
 
             stop_state.update_stop_access_state(
                 arrive_stop_id, 
@@ -177,6 +194,7 @@ def stop_times_for_kth_trip(
 def add_footpath_transfers(
     stop_state: StopAccessStates,
     feed: Feed,
+    is_reverse_search: bool
 ) -> List[str]:
     # initialize a return object
     updated_stop_ids = []
@@ -193,10 +211,14 @@ def add_footpath_transfers(
             # time to reach new nearby stops is the transfer cost plus arrival at last stop
             arrive_time_adjusted = stop_state.get_time_to_reach(stop_id)  + transfers_cost
             routing_path = [stop_id, arrive_stop_id]
+
             if len(stop_state.get_routing_path(stop_id)) == 0:
                 routing_path = stop_state.get_routing_path(stop_id) + routing_path
             else:
-                routing_path = stop_state.get_routing_path(stop_id) + routing_path[1:]
+                if is_reverse_search:
+                    routing_path = routing_path[:-1] + stop_state.get_routing_path(stop_id)
+                else:
+                    routing_path = stop_state.get_routing_path(stop_id) + routing_path[1:]
                                                                                    
             did_update = stop_state.update_stop_access_state(
                 arrive_stop_id,
@@ -223,27 +245,62 @@ def run_raptor(
 
     # setting transfer limit at 1
     for k in range (transfer_limit + 1):
-        # generate current list of stop ids under consideration
         tic = time.perf_counter()
         stop_times_for_kth_trip(stop_state, feed, is_reverse_search, available_trip_ids)
         toc = time.perf_counter()
-        # print(f"elapsed time of raptor calculation: {toc - tic}")
 
         # now add footpath transfers and update
         tic = time.perf_counter()
-        just_updated_stops = add_footpath_transfers(stop_state, feed)
+        just_updated_stops = add_footpath_transfers(stop_state, feed, is_reverse_search)
         toc = time.perf_counter()
-        # print(f"elapsed time of footpath transfers calculation: {toc - tic}")
 
         stop_state.already_processed_xfers += stop_state.just_updated_stops
         stop_state.just_updated_stops = just_updated_stops
     
     return stop_state
 
-def get_point_to_point(feed: Feed, time_to_reach_to_destinations):
+
+def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Optional[str]:
+    # check input values
+    request_paremeters = RequestParameter.parse_obj(req)
+    # when is_reverse_search is true, reverse variables assignment of from and to stop_ids
+    if request_paremeters.is_reverse_search:
+        from_stop_ids = request_paremeters.destination_stop_ids
+        to_stop_ids = request_paremeters.origin_stop_ids
+    else:
+        from_stop_ids = request_paremeters.origin_stop_ids
+        to_stop_ids = request_paremeters.destination_stop_ids
+    # set other variables
+    input_date = request_paremeters.input_date
+    input_secs = request_paremeters.input_secs
+    transfers_limit = request_paremeters.transfers_limit
+    is_reverse_search = request_paremeters.is_reverse_search
+    available_trip_ids = request_paremeters.available_trip_ids
+
+    # run raptor argolithum
+    tic = time.perf_counter()
+    stop_state = run_raptor(
+        feed,
+        from_stop_ids, 
+        input_date, 
+        input_secs, 
+        transfers_limit,
+        is_reverse_search,
+        available_trip_ids
+    )
+    toc = time.perf_counter()
+    print(f"route search time elapsed: {toc - tic} sec.")
+
+    # get duration from origin to destination 
+    time_to_reach_to_destinations = stop_state.time_to_reach_to_destinations(to_stop_ids)
+    # when route search is failed, return None 
+    if len(time_to_reach_to_destinations) == 0:
+        return None
+    # find a shortest route seach result
     time_to_reach_to_destinations = sorted(time_to_reach_to_destinations, key=lambda x: x["time_to_reach"])
     fastest_way = time_to_reach_to_destinations[0]
     stop_sequence = feed.stops[np.isin(feed.stops["stop_id"], fastest_way["routing_path"])]
+    # form the result as a geojson format
     result = {
         "type": "FeatureCollection",
         "features": [
@@ -258,33 +315,6 @@ def get_point_to_point(feed: Feed, time_to_reach_to_destinations):
         ]
     }
     return json.dumps(result)
-
-def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]]):
-    request_paremeters = RequestParameter.parse_obj(req)
-    if request_paremeters.is_reverse_search:
-        from_stop_ids = feed.get_stop_ids_from_parent_station(request_paremeters.destination_stop_id)    
-        to_stop_ids = feed.get_stop_ids_from_parent_station(request_paremeters.origin_stop_id)
-    else:
-        from_stop_ids = feed.get_stop_ids_from_parent_station(request_paremeters.origin_stop_id)
-        to_stop_ids = feed.get_stop_ids_from_parent_station(request_paremeters.destination_stop_id)
-
-    input_date = request_paremeters.input_date
-    input_secs = request_paremeters.input_secs
-    transfers_limit = request_paremeters.transfers_limit
-    is_reverse_search = request_paremeters.is_reverse_search
-    available_trip_ids = request_paremeters.available_trip_ids
-
-    stop_state = run_raptor(
-        feed,
-        from_stop_ids, 
-        input_date, 
-        input_secs, 
-        transfers_limit,
-        is_reverse_search,
-        available_trip_ids
-    )
-
-    return get_point_to_point(feed, stop_state.time_to_reach_to_destinations(to_stop_ids))
 
 #%%
 
