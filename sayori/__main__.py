@@ -3,7 +3,6 @@ import os
 import time
 
 from .raptor import search_point_to_point
-
 from .models import FeedPath, Feed
 
 def load_data_from_path() -> FeedPath:
@@ -25,28 +24,13 @@ def main() -> None:
 
     #define input data
     req = {
-        "origin_stop_id": "0120",
-        "destination_stop_id": "0150",
-        "input_date": "2023-05-31",
+        "origin_stop_ids": ['0120_5', '0120_6', '0120_7', '0120_4', '0120_1'],
+        "destination_stop_ids": ['0150_2', '0150_4', '0150_1', '0150_3'],
+        "input_date": "2021-09-24",
         "input_secs": 5 * 60 * 60,
-        "transfers_limit": 1,
-    }
-
-    # req = {
-    #     "origin_stop_ids": "371900",
-    #     "destination_stop_ids": "371050",
-    #     "input_date": "2023-05-31",
-    #     "input_secs": 11 * 60 * 60,
-    #     "transfers_limit": 1,
-    # }
-
-    req = {
-        "origin_stop_ids": ["399150-01"],
-        "destination_stop_ids":  ["399093-01"],
-        "input_date": "2023-05-31",
-        "input_secs": 11 * 60 * 60,
         "transfers_limit": 0,
     }
+
     tic = time.perf_counter()
     res = search_point_to_point(feed, req)
     toc = time.perf_counter()
