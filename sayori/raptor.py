@@ -4,7 +4,6 @@ import datetime
 import time
 import json
 import numpy as np
-import holidays
 
 from typing import List, Dict, Optional, Union
 from .models import TimeToStop, RequestParameter, Feed
@@ -12,19 +11,11 @@ from .models import TimeToStop, RequestParameter, Feed
 class StopAccessStates:
     def __init__(self, from_stop_ids: List[str], input_date: str, input_secs: int) -> None:
         self.from_stop_ids: List[str] = from_stop_ids
-        self.input_date: datetime.datetime = datetime.datetime.fromisoformat(input_date)
+        self.input_date: datetime.datetime = datetime.date.fromisoformat(input_date)
         self.input_secs: int = input_secs
-        self.input_date_isoweekday: int = self.get_isoweekday(self.input_date)
         self.time_to_stops: Dict[str, TimeToStop] = {origin_stop_id: TimeToStop() for origin_stop_id in from_stop_ids}
         self.already_processed_xfers: List[str] = []
         self.just_updated_stops: List[str] = from_stop_ids.copy()
-
-    def get_isoweekday(self, date: datetime.datetime):
-        regional_holidays = holidays.JP()
-        if date in regional_holidays:
-            return 7
-        else:
-            return date.isoweekday()
 
     def get_all_stops(self) -> List[str]:
         return list(self.time_to_stops.keys())
@@ -106,7 +97,7 @@ def stop_times_for_kth_trip(
     available_trip_ids: Optional[List[str]]
 ) -> None:
     # get service_id 
-    available_trips = feed.get_available_trips(stop_state.input_date_isoweekday)
+    available_trips = feed.get_available_trips(stop_state.input_date)
     trip_stop_pairings = {}
     for ref_stop_id in stop_state.just_updated_stops:
         # find all trips already related to this stop
@@ -308,7 +299,7 @@ def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]])
                 "type": "Feature",
                 "geometry": {
                     "type": "LineString",
-                    "coordinates": [[lon, lat] for lon, lat in zip(stop_sequence["longitude"], stop_sequence["latitude"])]
+                    "coordinates": [[lon, lat] for lon, lat in zip(stop_sequence["stop_lon"], stop_sequence["stop_lat"])]
                 },
                 "properties": {k:int(v) if isinstance(v, (int, np.int64)) else v for k, v in fastest_way.items()}
             }

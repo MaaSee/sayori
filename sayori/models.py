@@ -1,7 +1,57 @@
+import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
 import numpy as np
 import pandas as pd
+
+import pandera as pa
+from pandera.typing import Series
+
+class Stops(pa.SchemaModel):
+    stop_id: Series[str] = pa.Field(nullable=False)
+    stop_name: Series[str] = pa.Field(nullable=False)
+    parent_station: Series[str] = pa.Field(nullable=False)
+    platform_code: Series[str] = pa.Field(nullable=False)
+    stop_lat: Series[float] = pa.Field(nullable=False)
+    stop_lon: Series[float] = pa.Field(nullable=False)
+
+    class Config:
+        strict = True
+
+class Trips(pa.SchemaModel):
+    trip_id: Series[str] = pa.Field(nullable=False)
+    route_id: Series[str] = pa.Field(nullable=False)
+    service_id: Series[str] = pa.Field(nullable=False)
+    trip_long_name: Series[str] = pa.Field(nullable=True)
+    trip_short_name: Series[str] = pa.Field(nullable=True)
+
+    class Config:
+        strict = True
+
+class StopTimes(pa.SchemaModel):
+    trip_id: Series[str] = pa.Field(nullable=False)
+    stop_sequence: Series[int] = pa.Field(nullable=False)
+    stop_id: Series[str] = pa.Field(nullable=False)
+    arrival_time: Series[int] = pa.Field(nullable=False)
+    departure_time: Series[int] = pa.Field(nullable=False)
+
+    class Config:
+        strict = True
+
+class Calendar:
+    service_id: Series[str] = pa.Field(nullable=False)
+    monday: Series[int] = pa.Field(nullable=False)
+    tuesday: Series[int] = pa.Field(nullable=False)
+    wednesday: Series[int] = pa.Field(nullable=False)
+    thursday: Series[int] = pa.Field(nullable=False)
+    friday: Series[int] = pa.Field(nullable=False)
+    saturday: Series[int] = pa.Field(nullable=False)
+    sunday: Series[int] = pa.Field(nullable=False)
+    start_date: Series[str] = pa.Field(nullable=False)
+    end_date: Series[str] = pa.Field(nullable=False)
+
+    class Config:
+        strict = True
 
 class TimeToStop(BaseModel):
     time_to_reach: int = 0
@@ -86,8 +136,8 @@ class Feed(BaseModel):
             ndarray[col] = df[col].to_list()
         return ndarray
 
-    def get_available_trips(self, isoweekday: int) -> list:
-        return self.trips_calendar[self.trips_calendar[self.weekday[isoweekday - 1]] == 1]["trip_id"].tolist()
+    def get_available_trips(self, date: datetime.date) -> list:
+        return self.trips_calendar[self.trips_calendar["date"] == date]["trip_id"].tolist()
     
     def get_stop_ids_from_parent_station(self, parent_station: str) -> list:
         return self.stops[self.stops["parent_station"] == parent_station]["stop_id"].tolist()
