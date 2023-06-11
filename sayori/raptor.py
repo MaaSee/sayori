@@ -290,7 +290,6 @@ def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]])
     # find a shortest route seach result
     time_to_reach_to_destinations = sorted(time_to_reach_to_destinations, key=lambda x: x["time_to_reach"])
     fastest_way = time_to_reach_to_destinations[0]
-    stop_sequence = feed.stops[np.isin(feed.stops["stop_id"], fastest_way["routing_path"])]
     # form the result as a geojson format
     result = {
         "type": "FeatureCollection",
@@ -299,7 +298,7 @@ def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]])
                 "type": "Feature",
                 "geometry": {
                     "type": "LineString",
-                    "coordinates": [[lon, lat] for lon, lat in zip(stop_sequence["stop_lon"], stop_sequence["stop_lat"])]
+                    "coordinates": [list(feed.stops[feed.stops["stop_id"] == stop_id][["stop_lon", "stop_lat"]].tolist()[0]) for stop_id in fastest_way["routing_path"]]
                 },
                 "properties": {k:int(v) if isinstance(v, (int, np.int64)) else v for k, v in fastest_way.items()}
             }
