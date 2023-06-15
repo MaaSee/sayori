@@ -160,5 +160,7 @@ cython_debug/
 #.idea/
 
 .vscode/
+debug/
 original_data/
 raptor_data/
+debug*.py
