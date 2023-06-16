@@ -6,7 +6,7 @@ authors = ["Takanori Arai <takanori.arai@maas.co.jp>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = ">=3.9,<3.12,!=3.9.7"
 pandas = "^2.0.2"
 geopandas = "^0.13.1"
 pydantic = "^1.10.8"
