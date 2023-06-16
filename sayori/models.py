@@ -1,19 +1,28 @@
 import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field
+import pydantic
 import numpy as np
 import pandas as pd
 
 import pandera as pa
 from pandera.typing import Series
 
-class Stops(pa.SchemaModel):
+class FeedInfo(pa.SchemaModel):
+    feed_version: Series[str] = pa.Field(nullable=False)
+    feed_start_date: Series[pa.Date] = pa.Field(nullable=False)
+    feed_end_date: Series[pa.Date] = pa.Field(nullable=False)  
+
+    class Config:
+        strict = True 
+
+class Stops(pa.SchemaModel):   
     stop_id: Series[str] = pa.Field(nullable=False)
     stop_name: Series[str] = pa.Field(nullable=False)
     parent_station: Series[str] = pa.Field(nullable=False)
     platform_code: Series[str] = pa.Field(nullable=False)
     stop_lat: Series[float] = pa.Field(nullable=False)
     stop_lon: Series[float] = pa.Field(nullable=False)
+    feed_version: Series[str] = pa.Field(nullable=False)
 
     class Config:
         strict = True
@@ -24,6 +33,7 @@ class Trips(pa.SchemaModel):
     service_id: Series[str] = pa.Field(nullable=False)
     trip_long_name: Series[str] = pa.Field(nullable=True)
     trip_short_name: Series[str] = pa.Field(nullable=True)
+    feed_version: Series[str] = pa.Field(nullable=False)
 
     class Config:
         strict = True
@@ -34,39 +44,35 @@ class StopTimes(pa.SchemaModel):
     stop_id: Series[str] = pa.Field(nullable=False)
     arrival_time: Series[int] = pa.Field(nullable=False)
     departure_time: Series[int] = pa.Field(nullable=False)
+    feed_version: Series[str] = pa.Field(nullable=False)
 
     class Config:
         strict = True
 
-class Calendar:
-    service_id: Series[str] = pa.Field(nullable=False)
-    monday: Series[int] = pa.Field(nullable=False)
-    tuesday: Series[int] = pa.Field(nullable=False)
-    wednesday: Series[int] = pa.Field(nullable=False)
-    thursday: Series[int] = pa.Field(nullable=False)
-    friday: Series[int] = pa.Field(nullable=False)
-    saturday: Series[int] = pa.Field(nullable=False)
-    sunday: Series[int] = pa.Field(nullable=False)
-    start_date: Series[str] = pa.Field(nullable=False)
-    end_date: Series[str] = pa.Field(nullable=False)
+class Calendar(pa.SchemaModel):
+    service_id: Series[str] = pa.Field(nullable=False) 
+    date: Series[pa.Date] = pa.Field(nullable=False) 
+    start_date: Series[pa.Date] = pa.Field(nullable=False) 
+    end_date: Series[pa.Date] = pa.Field(nullable=False)
+    feed_version: Series[str] = pa.Field(nullable=False)
 
     class Config:
         strict = True
 
-class TimeToStop(BaseModel):
+class TimeToStop(pydantic.BaseModel):
     time_to_reach: int = 0
-    routing_path: List[str] = Field(default_factory=list)
-    preceding: List[Optional[str]] = Field(default_factory=list)
+    routing_path: List[str] = pydantic.Field(default_factory=list)
+    preceding: List[Optional[str]] = pydantic.Field(default_factory=list)
 
 
-class FeedPath(BaseModel):
+class FeedPath(pydantic.BaseModel):
     stops: str
     stop_times: str
     trips: str
     transfers: str
     calendar: str
 
-class RequestParameter(BaseModel):
+class RequestParameter(pydantic.BaseModel):
     origin_stop_ids: List[str]
     destination_stop_ids: List[str]
     input_date: str
@@ -75,7 +81,7 @@ class RequestParameter(BaseModel):
     is_reverse_search: bool = False
     available_trip_ids: Optional[List[str]] = None
 
-class Feed(BaseModel):
+class Feed(pydantic.BaseModel):
     stops: np.ndarray
     stops: np.ndarray
     stop_times: np.ndarray
@@ -83,7 +89,6 @@ class Feed(BaseModel):
     transfers: np.ndarray
     calendar: np.ndarray
     trips_calendar: np.ndarray
-    weekday: List[str] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', "saturday", "sunday"]
     
     class Config:
         arbitrary_types_allowed = True

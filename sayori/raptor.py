@@ -306,5 +306,51 @@ def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]])
     }
     return json.dumps(result)
 
+def search_point_to_point_routing_path(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Optional[str]:
+    # check input values
+    tic = time.perf_counter()
+    request_paremeters = RequestParameter.parse_obj(req)
+    # when is_reverse_search is true, reverse variables assignment of from and to stop_ids
+    if request_paremeters.is_reverse_search:
+        from_stop_ids = request_paremeters.destination_stop_ids
+        to_stop_ids = request_paremeters.origin_stop_ids
+    else:
+        from_stop_ids = request_paremeters.origin_stop_ids
+        to_stop_ids = request_paremeters.destination_stop_ids
+    # set other variables
+    input_date = request_paremeters.input_date
+    input_secs = request_paremeters.input_secs
+    transfers_limit = request_paremeters.transfers_limit
+    is_reverse_search = request_paremeters.is_reverse_search
+    available_trip_ids = request_paremeters.available_trip_ids
+    toc = time.perf_counter()
+    print(toc - tic)
+
+    # run raptor argolithum
+    tic = time.perf_counter()
+    stop_state = run_raptor(
+        feed,
+        from_stop_ids, 
+        input_date, 
+        input_secs, 
+        transfers_limit,
+        is_reverse_search,
+        available_trip_ids
+    )
+    toc = time.perf_counter()
+    print(f"route search time elapsed: {toc - tic} sec.")
+
+    # get duration from origin to destination 
+    time_to_reach_to_destinations = stop_state.time_to_reach_to_destinations(to_stop_ids)
+    # when route search is failed, return None 
+    if len(time_to_reach_to_destinations) == 0:
+        return None
+    # find a shortest route seach result
+    time_to_reach_to_destinations = sorted(time_to_reach_to_destinations, key=lambda x: x["time_to_reach"])
+    fastest_way = time_to_reach_to_destinations[0]
+    # form the result as a geojson format
+
+    return json.dumps({k:int(v) if isinstance(v, np.int64) else v for k, v in fastest_way.items()})
+
 #%%
 
