@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 import pandera as pa
-from pandera.typing import Series
+from pandera.typing import Series, DataFrame
 
 class FeedInfo(pa.SchemaModel):
     feed_version: Series[str] = pa.Field(nullable=False)
@@ -96,11 +96,11 @@ class Feed(pydantic.BaseModel):
     @classmethod
     def from_pandas(
         cls, 
-        stops: pd.DataFrame, 
-        stop_times: pd.DataFrame, 
-        trips: pd.DataFrame, 
+        stops: DataFrame[Stops], 
+        stop_times: DataFrame[StopTimes], 
+        trips: DataFrame[Trips], 
         transfers: pd.DataFrame, 
-        calendar: pd.DataFrame
+        calendar: DataFrame[Calendar]
     ) -> "Feed":
         
         trips_calendar = pd.merge(trips[["trip_id", "service_id"]], calendar, on="service_id")
