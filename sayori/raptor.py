@@ -280,7 +280,7 @@ def search_point_to_point(feed: Feed, req: Dict[str, Optional[Union[str, int]]])
         available_trip_ids
     )
     toc = time.perf_counter()
-    print(f"route search time elapsed: {toc - tic} sec.")
+    # print(f"route search time elapsed: {toc - tic} sec.")
 
     # get duration from origin to destination 
     time_to_reach_to_destinations = stop_state.time_to_reach_to_destinations(to_stop_ids)
@@ -324,7 +324,7 @@ def search_point_to_point_routing_path(feed: Feed, req: Dict[str, Optional[Union
     is_reverse_search = request_paremeters.is_reverse_search
     available_trip_ids = request_paremeters.available_trip_ids
     toc = time.perf_counter()
-    print(toc - tic)
+    # print(toc - tic)
 
     # run raptor argolithum
     tic = time.perf_counter()
@@ -338,7 +338,7 @@ def search_point_to_point_routing_path(feed: Feed, req: Dict[str, Optional[Union
         available_trip_ids
     )
     toc = time.perf_counter()
-    print(f"route search time elapsed: {toc - tic} sec.")
+    # print(f"route search time elapsed: {toc - tic} sec.")
 
     # get duration from origin to destination 
     time_to_reach_to_destinations = stop_state.time_to_reach_to_destinations(to_stop_ids)
