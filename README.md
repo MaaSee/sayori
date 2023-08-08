@@ -13,17 +13,17 @@ An example of directory structure is shown below:
 .
 ├── raptor_data
 .   ├── calendar
-.   │   └── <prefix>_calendar.parquet
+.   │   └── calendar_<prefix>.parquet
 .   ├── stop_times
-    │   └── <prefix>_stop_times.parquet
+    │   └── stop_times_<prefix>.parquet
     ├── stops
-    │   └── <prefix>_stops.parquet
+    │   └── stops_<prefix>.parquet
     ├── transfers
-    │   └── <prefix>_transfers.parquet
+    │   └── transfers_<prefix>.parquet
     ├── trips
-    │    └── <prefix>_trips.parquet
+    │    └── trips_<prefix>.parquet
     └── routes
-         └── <prefix>_routes.parquet
+         └── routes_<prefix>.parquet
 ```
 
 ## Execution
@@ -36,8 +36,36 @@ Point to point route search is simple routing between two points.
 
 There are seven request fields to execute point to point route search. 
 
+| field name | data type | default | descriptions |
+|----|----|----|----|
+| origin_stop_ids | List[str] | | List of stop_ids of origin point |
+| destination_stop_ids | List[str] | | List of stop_id of destination point |
+| specified_date | str | | A spacific date of route search. The format should be comformed to ISO8601 string |
+| specified_secs | int | | A specific seconds of route seach |
+| transfers_limit | int | | An upper limit of route search round |
+| is_reverse_search | bool | False | Set True when execute destination oriented route search |
+| available_trip_ids | Optional[List[str]] | None | Set a list of trip_id when execute route search with limited trip_ids |
+
+#### Returns
+
+GeoJSON string is returned. This GeoJSON feature represents for routing path with time to reach.
+
+| field name | description | 
+|----|----|
+| type | "FeatureCollection". See RFC7946. |
+| features[].type | "Feature". See RFC7946. |
+| features[].geometry.type | "LineString" | 
+| features[].geometry.coordinates | A sequence of longitude and latitude pairs are assgined. |
+| features[].properties.time_to_reach | An estimated duration of desinated point to point. |
+| features[].properties.routing_path | A sequence of stop_ids, which represents the way of routing path. |
+| features[].properties.preceding | The trip_ids used by route search. |
+| features[].properties.stop_id | A final reached stop_id as a result of routing. |
+
+#### Example
+
 ```python
-from sayori.raptor import search_point_to_point
+# Python execution sample
+from sayori.raptor import search_p2p_geojson
 from sayori.models import FeedPath, Feed
 
 # Read feed path
@@ -45,34 +73,22 @@ feed_path = load_data_from_path()
 # Create feed
 feed = Feed.from_feed_path(feed_path)
 
-#define input data
+# Define input data
 req = {
     "origin_stop_ids": ['0120_5', '0120_6', '0120_7', '0120_4', '0120_1'],
     "destination_stop_ids": ['0150_2', '0150_4', '0150_1', '0150_3'],
-    "input_date": "2021-09-24",
-    "input_secs": 5 * 60 * 60,
+    "specified_date": "2021-09-24",
+    "specified_secs": 5 * 60 * 60,
     "transfers_limit": 0,
 }
 
 # Execute raptor search
-res = search_point_to_point(feed, req)
+res = search_p2p_geojson(feed, req)
 ```
 
-| field name | data type | default | descriptions |
-|----|----|----|----|
-| origin_stop_ids | List[str] | | List of stop_ids of origin point |
-| destination_stop_ids | List[str] | | List of stop_id of destination point |
-| input_date | str | | A spacific date of route search. The format should be comformed to ISO8601 string |
-| input_secs | int | | A specific seconds of route seach |
-| transfers_limit | int | | An upper limit of route search round |
-| is_reverse_search | bool | False | Set True when execute destination oriented route search |
-| available_trip_ids | Optional[List[str]] | None | Set a list of trip_id when execute route search with limited trip_ids |
-
-#### Rerurns
-
-GeoJSON string is returned. This GeoJSON feature represents for routing path with time to reach.
 
 ```json
+// A GeoJSON returns sample
 {
     "type": "FeatureCollection", 
     "features": [
