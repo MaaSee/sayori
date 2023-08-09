@@ -162,5 +162,5 @@ cython_debug/
 .vscode/
 debug/
 original_data/
-raptor_data/
+raptor_data*/
 debug*.py
