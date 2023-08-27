@@ -2,7 +2,6 @@
 # %%
 import datetime
 import time
-import json
 import numpy as np
 
 from typing import List, Dict, Optional, Union
@@ -280,7 +279,6 @@ def search_p2p_geojson(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) ->
         available_trip_ids
     )
     toc = time.perf_counter()
-    # print(f"route search time elapsed: {toc - tic} sec.")
 
     # get duration from origin to destination 
     time_to_reach_to_destinations = stop_state.time_to_reach_to_destinations(to_stop_ids)
@@ -304,7 +302,7 @@ def search_p2p_geojson(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) ->
             }
         ]
     }
-    # return json.dumps(result)
+    
     return result
 
 def search_p2p_path(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Optional[str]:
@@ -325,10 +323,9 @@ def search_p2p_path(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Op
     is_reverse_search = request_paremeters.is_reverse_search
     available_trip_ids = request_paremeters.available_trip_ids
     toc = time.perf_counter()
-    # print(toc - tic)
 
     # run raptor argolithum
-    tic = time.perf_counter()
+    # tic = time.perf_counter()
     stop_state = run_raptor(
         feed,
         from_stop_ids, 
@@ -338,8 +335,7 @@ def search_p2p_path(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Op
         is_reverse_search,
         available_trip_ids
     )
-    toc = time.perf_counter()
-    # print(f"route search time elapsed: {toc - tic} sec.")
+    # toc = time.perf_counter()
 
     # get duration from origin to destination 
     time_to_reach_to_destinations = stop_state.time_to_reach_to_destinations(to_stop_ids)
