@@ -9,7 +9,7 @@ from pandera.typing import Series, DataFrame
 
 class Stops(pa.SchemaModel):   
     stop_id: Series[str] = pa.Field(unique = True, nullable=False)
-    stop_name: Series[str] = pa.Field(nullable=False)
+    stop_name: Series[str] = pa.Field(nullable=True)
     parent_station: Series[str] = pa.Field(nullable=True)
     platform_code: Series[str] = pa.Field(nullable=True)
     stop_lat: Series[float] = pa.Field(nullable=False, gt = 0)
@@ -22,29 +22,28 @@ class Trips(pa.SchemaModel):
     trip_id: Series[str] = pa.Field(unique = True, nullable=True)
     route_id: Series[str] = pa.Field(nullable=False)
     service_id: Series[str] = pa.Field(nullable=False)
-    trip_head_sign: Series[str] = pa.Field(nullable=True)
+    trip_headsign: Series[str] = pa.Field(nullable=True)
     trip_short_name: Series[str] = pa.Field(nullable=True)
+    block_id: Series[str] = pa.Field(nullable=True)
 
     class Config:
         strict = True
 
 class StopTimes(pa.SchemaModel):
-    trip_id: Series[str] = pa.Field(nullable=True)
-    stop_sequence: Series[int] = pa.Field(nullable=True)
-    stop_id: Series[str] = pa.Field(nullable=True)
+    trip_id: Series[str] = pa.Field(nullable=False)
+    stop_sequence: Series[int] = pa.Field(nullable=False)
+    stop_id: Series[str] = pa.Field(nullable=False)
     arrival_time: Series[int] = pa.Field(nullable=False)
     departure_time: Series[int] = pa.Field(nullable=False)
-    pickup_type: Series[str] = pa.Field(nullable = True)
-    drop_off_type: Series[str]
+    pickup_type: Series[int] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
+    drop_off_type: Series[int] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
 
     class Config:
         strict = True
 
 class Calendar(pa.SchemaModel):
-    calendar_date: Series[pa.Date] = pa.Field(nullable=True) 
-    service_ids: Series[List[str]] = pa.Field(nullable=True) 
-    start_date: Series[pa.Date] = pa.Field(nullable=False) 
-    end_date: Series[pa.Date] = pa.Field(nullable=False)
+    date: Series[pa.Date] = pa.Field(unique = True, nullable=False) 
+    service_ids: Series[pa.Object] = pa.Field(nullable=False) 
 
     class Config:
         strict = True
@@ -52,7 +51,7 @@ class Calendar(pa.SchemaModel):
 class Transfers(pa.SchemaModel):
     from_stop_id: Series[str] = pa.Field(nullable = False)
     to_stop_id: Series[str] = pa.Field(nullable = False)
-    transfer_type: Series[str] = pa.Field(nullable = False, isin = ["0", "1", "2", "3"])
+    transfer_type: Series[int] = pa.Field(nullable = False, isin = [0, 1, 2, 3])
     min_transfer_time: Series[int] = pa.Field(nullable = False, gt = 0)
 
 class TimeToStop(pydantic.BaseModel):
@@ -78,7 +77,6 @@ class RequestParameter(pydantic.BaseModel):
 
 class Feed(pydantic.BaseModel):
     stops: np.ndarray
-    stops: np.ndarray
     stop_times: np.ndarray
     trips: np.ndarray
     transfers: np.ndarray
@@ -97,6 +95,12 @@ class Feed(pydantic.BaseModel):
         calendar: DataFrame[Calendar]
     ) -> "Feed":
 
+        stops = Stops.validate(stops)
+        stop_times = StopTimes.validate(stop_times)
+        trips = Trips.validate(trips)
+        transfers = Transfers.validate(transfers)
+        calendar = Calendar.validate(calendar)
+
         return cls.parse_obj({
             "stops": cls.convert_pandas2ndarray(stops),
             "stop_times": cls.convert_pandas2ndarray(stop_times),
@@ -112,6 +116,12 @@ class Feed(pydantic.BaseModel):
         trips = pd.read_parquet(feed_path.trips)
         transfers = pd.read_parquet(feed_path.transfers)
         calendar = pd.read_parquet(feed_path.calendar)
+
+        stops = Stops.validate(stops)
+        stop_times = StopTimes.validate(stop_times)
+        trips = Trips.validate(trips)
+        transfers = Transfers.validate(transfers)
+        calendar = Calendar.validate(calendar)
 
         return cls.parse_obj({
             "stops": cls.convert_pandas2ndarray(stops),
@@ -134,7 +144,7 @@ class Feed(pydantic.BaseModel):
             self.trips[
                 np.isin(
                     self.trips["service_id"], 
-                    self.calendar[self.calendar["calendar_date"] == date]["service_ids"][0]
+                    self.calendar[self.calendar["date"] == date]["service_ids"][0]
                 )
             ]["trip_id"].tolist()
         )
