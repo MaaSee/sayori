@@ -28,6 +28,9 @@ class StopAccessStates:
     def get_routing_path(self, stop_id: str) -> List[str]:
         return self.time_to_stops[stop_id].routing_path
     
+    def get_routing_path_optional(self, stop_id: str) -> np.array:
+        return self.time_to_stops[stop_id].routing_path_optional
+    
     def get_last_trip_id(self, stop_id:str) -> Optional[str]:
         if len(self.get_preceding(stop_id)) > 0:
             return self.get_preceding(stop_id)[-1] 
@@ -56,12 +59,17 @@ class StopAccessStates:
     def update_path(self, stop_id: str, routing_path: List[str]) -> None:
         self.time_to_stops[stop_id].routing_path = routing_path
         return None
+
+    def update_path_optional(self, stop_id: str, routing_path_optional: np.array) -> None:
+        self.time_to_stops[stop_id].routing_path_optional = routing_path_optional
+        return None
     
     def update_stop_access_state(
         self,
         stop_id: str,
         time_to_reach: Union[int, float],
         routing_path: List[str],
+        routing_path_optional: np.array,
         trip_id: Optional[str] = None,
         preceding_path: Optional[List[str]] = None,
     ) -> bool:
@@ -78,6 +86,7 @@ class StopAccessStates:
 
         if did_update:
             self.update_path(stop_id, routing_path)
+            self.update_path_optional(stop_id, routing_path_optional)
             # override if a preceding path is provided
             if preceding_path:
                 self.update_preceding_path(stop_id, preceding_path)
@@ -156,25 +165,31 @@ def stop_times_for_kth_trip(
             if is_reverse_search:
                 arrive_time_adjusted = stop_state.specified_secs - departure_time + baseline_cost
                 # get current routing path and combine preceding path
-                current_routing_path = stop_times_after[(stop_times_after["stop_sequence"] >= arrive_stop_sequence)]["stop_id"].tolist()                                 
+                current_routing_path = stop_times_after[(stop_times_after["stop_sequence"] >= arrive_stop_sequence)]["stop_id"].tolist()    
+                current_routing_path_optional = stop_times_after[(stop_times_after["stop_sequence"] >= arrive_stop_sequence)][["trip_id", "stop_sequence", "stop_id"]]
             else:
                 arrive_time_adjusted = arrive_time - stop_state.specified_secs + baseline_cost
                 # get current routing path and combine preceding path
                 current_routing_path = stop_times_after[(stop_times_after["stop_sequence"] <= arrive_stop_sequence)]["stop_id"].tolist()
+                current_routing_path_optional = stop_times_after[(stop_times_after["stop_sequence"] <= arrive_stop_sequence)][["trip_id", "stop_sequence", "stop_id"]]
             
             # append current routing path to stopstate
             if len(stop_state.get_routing_path(ref_stop_id)) == 0:
                 routing_path = stop_state.get_routing_path(ref_stop_id) + current_routing_path
+                routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(ref_stop_id), current_routing_path_optional]) 
             else:
                 if is_reverse_search:
-                    routing_path = current_routing_path[:-1] + stop_state.get_routing_path(ref_stop_id)  
+                    routing_path = current_routing_path[:-1] + stop_state.get_routing_path(ref_stop_id)
+                    routing_path_optional = np.concatenate([current_routing_path_optional[:-1], stop_state.get_routing_path_optional(ref_stop_id)])
                 else:
                     routing_path = stop_state.get_routing_path(ref_stop_id) + current_routing_path[1:]
+                    routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(ref_stop_id), current_routing_path_optional[1:]])
 
             stop_state.update_stop_access_state(
                 arrive_stop_id, 
                 arrive_time_adjusted,
                 routing_path,
+                routing_path_optional,
                 trip_id,
                 preceding_path
             )
@@ -201,19 +216,28 @@ def add_footpath_transfers(
             # time to reach new nearby stops is the transfer cost plus arrival at last stop
             arrive_time_adjusted = stop_state.get_time_to_reach(stop_id)  + transfers_cost
             routing_path = [stop_id, arrive_stop_id]
+            routing_path_optional = np.array(
+                [("walk", 1, stop_id), ("walk", 2, arrive_stop_id)],
+                dtype=[("trip_id", "object"), ("stop_sequence", "int64"), ("stop_id", "object")]
+            )
 
             if len(stop_state.get_routing_path(stop_id)) == 0:
                 routing_path = stop_state.get_routing_path(stop_id) + routing_path
+                routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(stop_id),routing_path_optional]) 
             else:
                 if is_reverse_search:
+
                     routing_path = routing_path[:-1] + stop_state.get_routing_path(stop_id)
+                    routing_path_optional = np.concatenate([routing_path_optional[:-1], stop_state.get_routing_path_optional(stop_id)]) 
                 else:
                     routing_path = stop_state.get_routing_path(stop_id) + routing_path[1:]
+                    routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(stop_id), routing_path_optional[1:]]) 
                                                                                    
             did_update = stop_state.update_stop_access_state(
                 arrive_stop_id,
                 arrive_time_adjusted,
                 routing_path,
+                routing_path_optional,
                 last_trip_id,
             )
             if did_update:

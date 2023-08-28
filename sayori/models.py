@@ -57,7 +57,11 @@ class Transfers(pa.SchemaModel):
 class TimeToStop(pydantic.BaseModel):
     time_to_reach: int = 0
     routing_path: List[str] = pydantic.Field(default_factory=list)
+    routing_path_optional: np.ndarray = pydantic.Field(default_factory=lambda: np.empty(0, dtype=[("trip_id", "object"), ("stop_sequence", "int64"), ("stop_id", "object")]))
     preceding: List[Optional[str]] = pydantic.Field(default_factory=list)
+
+    class Config:
+        arbitrary_types_allowed = True
 
 class FeedPath(pydantic.BaseModel):
     stops: str
