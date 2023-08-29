@@ -370,8 +370,9 @@ def search_p2p_path(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Op
     time_to_reach_to_destinations = sorted(time_to_reach_to_destinations, key=lambda x: x["time_to_reach"])
     fastest_way = time_to_reach_to_destinations[0]
     # form the result as a geojson format
+    fastest_way["routing_path_optional"] = [{"trip_id": row[0], "stop_sequence": int(row[1]), "stop_id": row[2]} for row in fastest_way["routing_path_optional"]]
 
-    return {k:int(v) if isinstance(v, np.int64) else v for k, v in fastest_way.items()}
+    return {k:int(v) if isinstance(v, np.int64) else v for k, v in fastest_way.items() if k != "preceding"}
 
 #%%
 

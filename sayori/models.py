@@ -12,8 +12,8 @@ class Stops(pa.SchemaModel):
     stop_name: Series[str] = pa.Field(nullable=True)
     parent_station: Series[str] = pa.Field(nullable=True)
     platform_code: Series[str] = pa.Field(nullable=True)
-    stop_lat: Series[float] = pa.Field(nullable=True)
-    stop_lon: Series[float] = pa.Field(nullable=True)
+    stop_lat: Series[pa.Float32] = pa.Field(nullable=True)
+    stop_lon: Series[pa.Float32] = pa.Field(nullable=True)
 
     class Config:
         strict = True
@@ -31,12 +31,12 @@ class Trips(pa.SchemaModel):
 
 class StopTimes(pa.SchemaModel):
     trip_id: Series[str] = pa.Field(nullable=False)
-    stop_sequence: Series[int] = pa.Field(nullable=False)
+    stop_sequence: Series[pa.Int64] = pa.Field(nullable=False)
     stop_id: Series[str] = pa.Field(nullable=False)
-    arrival_time: Series[int] = pa.Field(nullable=False)
-    departure_time: Series[int] = pa.Field(nullable=False)
-    pickup_type: Series[int] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
-    drop_off_type: Series[int] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
+    arrival_time: Series[pa.Int32] = pa.Field(nullable=False)
+    departure_time: Series[pa.Int32] = pa.Field(nullable=False)
+    pickup_type: Series[pa.Int32] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
+    drop_off_type: Series[pa.Int32] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
 
     class Config:
         strict = True
@@ -51,8 +51,8 @@ class Calendar(pa.SchemaModel):
 class Transfers(pa.SchemaModel):
     from_stop_id: Series[str] = pa.Field(nullable = False)
     to_stop_id: Series[str] = pa.Field(nullable = False)
-    transfer_type: Series[int] = pa.Field(nullable = False, isin = [0, 1, 2, 3])
-    min_transfer_time: Series[int] = pa.Field(nullable = False, gt = 0)
+    transfer_type: Series[pa.Int32] = pa.Field(nullable = False, isin = [0, 1, 2, 3])
+    min_transfer_time: Series[pa.Int32] = pa.Field(nullable = False, gt = 0)
 
 class TimeToStop(pydantic.BaseModel):
     time_to_reach: int = 0
