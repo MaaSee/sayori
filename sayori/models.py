@@ -42,7 +42,7 @@ class StopTimes(pa.SchemaModel):
         strict = True
 
 class Calendar(pa.SchemaModel):
-    date: Series[pa.Date] = pa.Field(unique = True, nullable=False) 
+    calendar_date: Series[pa.Date] = pa.Field(unique = True, nullable=False) 
     service_ids: Series[pa.Object] = pa.Field(nullable=False) 
 
     class Config:
@@ -148,7 +148,7 @@ class Feed(pydantic.BaseModel):
             self.trips[
                 np.isin(
                     self.trips["service_id"], 
-                    self.calendar[self.calendar["date"] == date]["service_ids"][0]
+                    self.calendar[self.calendar["calendar_date"] == date]["service_ids"][0]
                 )
             ]["trip_id"].tolist()
         )
