@@ -12,8 +12,8 @@ class Stops(pa.SchemaModel):
     stop_name: Series[str] = pa.Field(nullable=True)
     parent_station: Series[str] = pa.Field(nullable=True)
     platform_code: Series[str] = pa.Field(nullable=True)
-    stop_lat: Series[float] = pa.Field(nullable=False, gt = 0)
-    stop_lon: Series[float] = pa.Field(nullable=False, gt = 0)
+    stop_lat: Series[float] = pa.Field(nullable=True, gt = 0)
+    stop_lon: Series[float] = pa.Field(nullable=True, gt = 0)
 
     class Config:
         strict = True
