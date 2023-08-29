@@ -228,10 +228,10 @@ def add_footpath_transfers(
                 if is_reverse_search:
 
                     routing_path = routing_path[:-1] + stop_state.get_routing_path(stop_id)
-                    routing_path_optional = np.concatenate([routing_path_optional[:-1], stop_state.get_routing_path_optional(stop_id)]) 
+                    routing_path_optional = np.concatenate([routing_path_optional, stop_state.get_routing_path_optional(stop_id)]) 
                 else:
                     routing_path = stop_state.get_routing_path(stop_id) + routing_path[1:]
-                    routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(stop_id), routing_path_optional[1:]]) 
+                    routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(stop_id), routing_path_optional]) 
                                                                                    
             did_update = stop_state.update_stop_access_state(
                 arrive_stop_id,
