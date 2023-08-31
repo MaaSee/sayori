@@ -180,10 +180,10 @@ def stop_times_for_kth_trip(
             else:
                 if is_reverse_search:
                     routing_path = current_routing_path[:-1] + stop_state.get_routing_path(ref_stop_id)
-                    routing_path_optional = np.concatenate([current_routing_path_optional[:-1], stop_state.get_routing_path_optional(ref_stop_id)])
+                    routing_path_optional = np.concatenate([current_routing_path_optional, stop_state.get_routing_path_optional(ref_stop_id)])
                 else:
                     routing_path = stop_state.get_routing_path(ref_stop_id) + current_routing_path[1:]
-                    routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(ref_stop_id), current_routing_path_optional[1:]])
+                    routing_path_optional = np.concatenate([stop_state.get_routing_path_optional(ref_stop_id), current_routing_path_optional])
 
             stop_state.update_stop_access_state(
                 arrive_stop_id, 
@@ -216,10 +216,17 @@ def add_footpath_transfers(
             # time to reach new nearby stops is the transfer cost plus arrival at last stop
             arrive_time_adjusted = stop_state.get_time_to_reach(stop_id)  + transfers_cost
             routing_path = [stop_id, arrive_stop_id]
-            routing_path_optional = np.array(
-                [("walk", 1, stop_id), ("walk", 2, arrive_stop_id)],
-                dtype=[("trip_id", "object"), ("stop_sequence", "int64"), ("stop_id", "object")]
-            )
+
+            if is_reverse_search:
+                routing_path_optional = np.array(
+                    [("walk", 1, arrive_stop_id), ("walk", 2, stop_id)],
+                    dtype=[("trip_id", "object"), ("stop_sequence", "int64"), ("stop_id", "object")]
+                )
+            else:
+                routing_path_optional = np.array(
+                    [("walk", 1, stop_id), ("walk", 2, arrive_stop_id)],
+                    dtype=[("trip_id", "object"), ("stop_sequence", "int64"), ("stop_id", "object")]
+                )
 
             if len(stop_state.get_routing_path(stop_id)) == 0:
                 routing_path = stop_state.get_routing_path(stop_id) + routing_path
