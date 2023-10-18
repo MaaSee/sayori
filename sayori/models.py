@@ -79,6 +79,16 @@ class RequestParameter(pydantic.BaseModel):
     is_reverse_search: bool = False
     available_trip_ids: Optional[List[str]] = None
 
+class RequestParameterIsochrones(pydantic.BaseModel):
+    origin_stop_ids: List[str]
+    # destination_stop_ids: List[str]
+    specified_date: str
+    specified_secs: int
+    transfers_limit: int
+    is_reverse_search: bool = False
+    available_trip_ids: Optional[List[str]] = None
+
+
 class Feed(pydantic.BaseModel):
     stops: np.ndarray
     stop_times: np.ndarray

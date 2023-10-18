@@ -5,7 +5,7 @@ import time
 import numpy as np
 
 from typing import List, Dict, Optional, Union
-from .models import TimeToStop, RequestParameter, Feed
+from .models import TimeToStop, RequestParameter, Feed, RequestParameterIsochrones
 
 class StopAccessStates:
     def __init__(self, from_stop_ids: List[str], specified_date: str, specified_secs: int) -> None:
@@ -380,6 +380,55 @@ def search_p2p_path(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) -> Op
     fastest_way["routing_path_optional"] = [{"trip_id": row[0], "stop_sequence": int(row[1]), "stop_id": row[2]} for row in fastest_way["routing_path_optional"]]
 
     return {k:int(v) if isinstance(v, np.int64) else v for k, v in fastest_way.items() if k != "preceding"}
+
+def search_isochrones(feed: Feed, req: Dict[str, Optional[Union[str, int]]]):
+    
+    request_paremeters = RequestParameterIsochrones.parse_obj(req)
+
+    from_stop_ids = request_paremeters.origin_stop_ids
+    # set other variables
+    specified_date = request_paremeters.specified_date
+    specified_secs = request_paremeters.specified_secs
+    transfers_limit = request_paremeters.transfers_limit
+    is_reverse_search = request_paremeters.is_reverse_search
+    available_trip_ids = request_paremeters.available_trip_ids
+
+    # run raptor argolithum
+    # tic = time.perf_counter()
+    stop_state = run_raptor(
+        feed,
+        from_stop_ids, 
+        specified_date, 
+        specified_secs, 
+        transfers_limit,
+        is_reverse_search,
+        available_trip_ids
+    )
+
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [feed.stops[feed.stops["stop_id"] == k]["stop_lon"][0], feed.stops[feed.stops["stop_id"] == k]["stop_lat"][0]]
+                },
+                "properties": {
+                    "date": specified_date,
+                    "stop_id": k,
+                    "stop_name": feed.stops[feed.stops["stop_id"] == k]["stop_name"][0],
+                    "time_to_reach": int(v.time_to_reach),
+                    "routing_path": v.routing_path,
+                    # "routing_path_optional": v.routing_path_optional
+                }
+            }
+            for k, v in stop_state.time_to_stops.items()
+        ]
+    }
+
+    
+
 
 #%%
 
