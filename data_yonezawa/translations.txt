@@ -1,0 +1,273 @@
+trans_id,lang,translation
+米沢市,ja,米沢市
+米沢市,ja-Hrkt,よねざわし
+米沢市,en,yonezawa city
+ＮＴＴ前,ja,ＮＴＴ前
+ＮＴＴ前,ja-Hrkt,えぬてぃーてぃーまえ
+ＮＴＴ前,en,NTT
+アルカディア,ja,アルカディア
+アルカディア,ja-Hrkt,あるかでぃあ
+アルカディア,en,Arcadia
+イオン米沢前,ja,イオン米沢前
+イオン米沢前,ja-Hrkt,いおんよねざわまえ
+イオン米沢前,en,Aeon Yonezawa
+すこやかセンター,ja,すこやかセンター
+すこやかセンター,ja-Hrkt,すこやかせんたー
+すこやかセンター,en,Sukoyaka Center
+テクノセンター前,ja,テクノセンター前
+テクノセンター前,ja-Hrkt,てくのせんたーまえ
+テクノセンター前,en,Techno Center
+ナセＢＡ前,ja,ナセＢＡ前
+ナセＢＡ前,ja-Hrkt,なせばまえ
+ナセＢＡ前,en,NASEBA City Library
+七中前,ja,七中前
+七中前,ja-Hrkt,ななちゅうまえ
+七中前,en,Nanachū Middle School
+万世小学校前,ja,万世小学校前
+万世小学校前,ja-Hrkt,ばんせいしょうがっこうまえ
+万世小学校前,en,Bansei Elementary School
+三友堂病院前,ja,三友堂病院前
+三友堂病院前,ja-Hrkt,さんゆうどうびょういんまえ
+三友堂病院前,en,Sanyūdō Hospital
+上杉神社前,ja,上杉神社前
+上杉神社前,ja-Hrkt,うえすぎじんじゃまえ
+上杉神社前,en,Uesugi Jinja Shrine
+中央一丁目,ja,中央一丁目
+中央一丁目,ja-Hrkt,ちゅうおういっちょうめ
+中央一丁目,en,Chūō 1-Chōme
+中央三丁目,ja,中央三丁目
+中央三丁目,ja-Hrkt,ちゅうおうさんちょうめ
+中央三丁目,en,Chūō 3-Chōme
+中央二丁目,ja,中央二丁目
+中央二丁目,ja-Hrkt,ちゅうおうにちょうめ
+中央二丁目,en,Chūō 2-Chōme
+中央五丁目,ja,中央五丁目
+中央五丁目,ja-Hrkt,ちゅうおうごちょうめ
+中央五丁目,en,Chūō 5-Chōme
+中央四丁目,ja,中央四丁目
+中央四丁目,ja-Hrkt,ちゅうおうよんちょうめ
+中央四丁目,en,Chūō 4-Chōme
+九里学園前,ja,九里学園前
+九里学園前,ja-Hrkt,くのりがくえんまえ
+九里学園前,en,Kunori gakuen mae
+二中前,ja,二中前
+二中前,ja-Hrkt,にちゅうまえ
+二中前,en,Nichū Middle School
+住之江橋,ja,住之江橋
+住之江橋,ja-Hrkt,すみのえばし
+住之江橋,en,Suminoe Bridge
+信夫町,ja,信夫町
+信夫町,ja-Hrkt,しのぶまち
+信夫町,en,Shinobumachi
+刈安,ja,刈安
+刈安,ja-Hrkt,かりやす
+刈安,en,Kariyasu
+北村公園西,ja,北村公園西
+北村公園西,ja-Hrkt,きたむらこうえんにし
+北村公園西,en,Kitamura Park West
+南部小前,ja,南部小前
+南部小前,ja-Hrkt,なんぶしょうまえ
+南部小前,en,Nanbusho mae
+吾妻町南,ja,吾妻町南
+吾妻町南,ja-Hrkt,あづまちょうみなみ
+吾妻町南,en,Azumacho minami
+国立米沢病院前,ja,国立米沢病院前
+国立米沢病院前,ja-Hrkt,こくりつよねざわびょういんまえ
+国立米沢病院前,en,Kokuritsu yonezawabyoin mae
+城南一丁目,ja,城南一丁目
+城南一丁目,ja-Hrkt,じょうなんいっちょうめ
+城南一丁目,en,Jōnan 1-Chōme
+城南二丁目,ja,城南二丁目
+城南二丁目,ja-Hrkt,じょうなんにちょうめ
+城南二丁目,en,Jōnan 2-Chōme
+城西郵便局前,ja,城西郵便局前
+城西郵便局前,ja-Hrkt,じょうせいゆうびんきょくまえ
+城西郵便局前,en,Jōsei Post Office
+大町,ja,大町
+大町,ja-Hrkt,おおまち
+大町,en,Ōmachi
+大町一丁目,ja,大町一丁目
+大町一丁目,ja-Hrkt,おおまちいっちょうめ
+大町一丁目,en,Ōmachi 1-Chōme
+太田町三丁目,ja,太田町三丁目
+太田町三丁目,ja-Hrkt,おおたまちさんちょうめ
+太田町三丁目,en,Otamachi 3chome
+太田町二丁目,ja,太田町二丁目
+太田町二丁目,ja-Hrkt,おおたまちにちょうめ
+太田町二丁目,en,Otamachi 2chome
+太田町五丁目,ja,太田町五丁目
+太田町五丁目,ja-Hrkt,おおたまちごちょうめ
+太田町五丁目,en,Otamachi 5chome
+山大正門,ja,山大正門
+山大正門,ja-Hrkt,やまだいせいもん
+山大正門,en,Yamagata University Front Gate
+川越石,ja,川越石
+川越石,ja-Hrkt,かわごえいし
+川越石,en,Kawagoeishi
+工業団地入口,ja,工業団地入口
+工業団地入口,ja-Hrkt,こうぎょうだんちいりぐち
+工業団地入口,en,Kōgyō Danchi Entrance
+市立病院前,ja,市立病院前
+市立病院前,ja-Hrkt,しりつびょういんまえ
+市立病院前,en,City Hospital
+年金事務所西,ja,年金事務所西
+年金事務所西,ja-Hrkt,ねんきんじむしょにし
+年金事務所西,en,Pension Office West
+御廟所西口,ja,御廟所西口
+御廟所西口,ja-Hrkt,ごびょうしょにじぐち
+御廟所西口,en,Gobyōsho West Entrance
+愛宕小前,ja,愛宕小前
+愛宕小前,ja-Hrkt,あたごしょうまえ
+愛宕小前,en,Atago Elementary School
+文化センター南,ja,文化センター南
+文化センター南,ja-Hrkt,ぶんかせんたーみなみ
+文化センター南,en,Bunka Center South
+春日一丁目,ja,春日一丁目
+春日一丁目,ja-Hrkt,かすがいっちょうめ
+春日一丁目,en,Kasuga 1-Chōme
+木場,ja,木場
+木場,ja-Hrkt,きば
+木場,en,Kiba
+本町,ja,本町
+本町,ja-Hrkt,ほんちょう
+本町,en,Honcho
+東一丁目,ja,東一丁目
+東一丁目,ja-Hrkt,ひがしいっちょうめ
+東一丁目,en,Higashi 1-Chōme
+東二丁目,ja,東二丁目
+東二丁目,ja-Hrkt,ひがしにちょうめ
+東二丁目,en,Higashi 2chome
+東大通,ja,東大通
+東大通,ja-Hrkt,ひがしおおどおり
+東大通,en,Higashi Oōdōri
+松林寺口,ja,松林寺口
+松林寺口,ja-Hrkt,しょうりんじぐち
+松林寺口,en,Shōrin Temple Entrance
+栄養大・米短前,ja,栄養大・米短前
+栄養大・米短前,ja-Hrkt,えいようだい・よねたんまえ
+栄養大・米短前,en,Eiyodai･Yonetan mae
+桑山公園前,ja,桑山公園前
+桑山公園前,ja-Hrkt,くわやまこうえんまえ
+桑山公園前,en,Kuwayama Park
+桑山団地中,ja,桑山団地中
+桑山団地中,ja-Hrkt,くわやまだんちなか
+桑山団地中,en,Kuwayama Danchi Middle
+桑山団地口,ja,桑山団地口
+桑山団地口,ja-Hrkt,くわやまだんちぐち
+桑山団地口,en,Kuwayama Danchi Entrance
+桑山団地東,ja,桑山団地東
+桑山団地東,ja-Hrkt,くわやまだんちひがし
+桑山団地東,en,Kuwayama Danchi East
+桑山団地西,ja,桑山団地西
+桑山団地西,ja-Hrkt,くわやまだんちにし
+桑山団地西,en,Kuwayama Danchi West
+梓山,ja,梓山
+梓山,ja-Hrkt,ずさやま
+梓山,en,Zusayama
+梓川,ja,梓川
+梓川,ja-Hrkt,あずさがわ
+梓川,en,Azusagawa
+梓神社前,ja,梓神社前
+梓神社前,ja-Hrkt,あずさじんじゃまえ
+梓神社前,en,Azusa Jinja Shrine
+法泉寺西,ja,法泉寺西
+法泉寺西,ja-Hrkt,ほうせんじにし
+法泉寺西,en,Hōsen Temple West
+片子,ja,片子
+片子,ja-Hrkt,かたこ
+片子,en,Katako
+牛森,ja,牛森
+牛森,ja-Hrkt,うしもり
+牛森,en,Ushimori
+皇大神社前,ja,皇大神社前
+皇大神社前,ja-Hrkt,こうたいじんじゃまえ
+皇大神社前,en,Koutai Jinja Shrine
+相生橋西,ja,相生橋西
+相生橋西,ja-Hrkt,あいおいばしにし
+相生橋西,en,Aioi Bridge West
+県営相生ｱﾊﾟｰﾄ東,ja,県営相生ｱﾊﾟｰﾄ東
+県営相生ｱﾊﾟｰﾄ東,ja-Hrkt,けんえいあいおいあぱーとひがし
+県営相生ｱﾊﾟｰﾄ東,en,Prefectural Aioi Apartments East
+福田町一丁目,ja,福田町一丁目
+福田町一丁目,ja-Hrkt,ふくだまちいっちょうめ
+福田町一丁目,en,Fukudamachi 1-Chōme
+福田町二丁目,ja,福田町二丁目
+福田町二丁目,ja-Hrkt,ふくだまちにちょうめ
+福田町二丁目,en,Fukudamachi 2-Chōme
+福田町西,ja,福田町西
+福田町西,ja-Hrkt,ふくだまちにし
+福田町西,en,Fukudamachi West
+福祉の里入口,ja,福祉の里入口
+福祉の里入口,ja-Hrkt,ふくしさのさといりぐち
+福祉の里入口,en,Fukushi no Sato Entrance
+税務署前,ja,税務署前
+税務署前,ja-Hrkt,ぜいむしょまえ
+税務署前,en,Tax Office
+米工前,ja,米工前
+米工前,ja-Hrkt,よねこうまえ
+米工前,en,Yonezawa KōgyōHigh School
+米沢スキー場前,ja,米沢スキー場前
+米沢スキー場前,ja-Hrkt,よねざわすきーじょうまえ
+米沢スキー場前,en,Yonezawa Ski Area
+米沢営業所,ja,米沢営業所
+米沢営業所,ja-Hrkt,よねざわえいぎょうしょ
+米沢営業所,en,Yonezawa Eigyōsho
+米沢市役所前,ja,米沢市役所前
+米沢市役所前,ja-Hrkt,よねざわしやくしょまえ
+米沢市役所前,en,Yonezawa City Hall
+米沢駅前,ja,米沢駅前
+米沢駅前,ja-Hrkt,よねざわえきまえ
+米沢駅前,en,Yonezawa Station
+総合公園口,ja,総合公園口
+総合公園口,ja-Hrkt,そうごうこうえんぐち
+総合公園口,en,Municipal Park Entrance
+興望館前,ja,興望館前
+興望館前,ja-Hrkt,こうぼうかんまえ
+興望館前,en,Cobokan mae
+舟山病院前,ja,舟山病院前
+舟山病院前,ja-Hrkt,ふなやまびょういんまえ
+舟山病院前,en,Funayama Hospital
+西部こども園前,ja,西部こども園前
+西部こども園前,ja-Hrkt,せいぶこどもえんまえ
+西部こども園前,en,Seibu Childcare Center
+西部ｺﾐｭﾆﾃｨｾﾝﾀｰ前,ja,西部ｺﾐｭﾆﾃｨｾﾝﾀｰ前
+西部ｺﾐｭﾆﾃｨｾﾝﾀｰ前,ja-Hrkt,せいぶこみゅにてぃせんたーまえ
+西部ｺﾐｭﾆﾃｨｾﾝﾀｰ前,en,Seibu Community Center
+通町三丁目,ja,通町三丁目
+通町三丁目,ja-Hrkt,とおりまちさんちょうめ
+通町三丁目,en,Torimachi 3chome
+通町二丁目,ja,通町二丁目
+通町二丁目,ja-Hrkt,とおりまちにちょうめ
+通町二丁目,en,Torimachi 2chome
+通町八丁目,ja,通町八丁目
+通町八丁目,ja-Hrkt,とおりまちはっちょうめ
+通町八丁目,en,Torimachi 8chome
+通町六丁目,ja,通町六丁目
+通町六丁目,ja-Hrkt,とおりまちろくちょうめ
+通町六丁目,en,Torimachi 6chome
+通町郵便局前,ja,通町郵便局前
+通町郵便局前,ja-Hrkt,とおりまちゆうびんきょくまえ
+通町郵便局前,en,Torimachi yubinkyoku mae
+金池一丁目,ja,金池一丁目
+金池一丁目,ja-Hrkt,かないけいっちょうめ
+金池一丁目,en,Kanaike 1-Chōme
+金谷口,ja,金谷口
+金谷口,ja-Hrkt,かなやぐち
+金谷口,en,Kanaya Entrance
+門東町,ja,門東町
+門東町,ja-Hrkt,もんとうまち
+門東町,en,Montomachi
+駅前二丁目,ja,駅前二丁目
+駅前二丁目,ja-Hrkt,えきまえにちょうめ
+駅前二丁目,en,Ekimae 2-Chōme
+駅前四丁目,ja,駅前四丁目
+駅前四丁目,ja-Hrkt,えきまえよんちょうめ
+駅前四丁目,en,Ekimae 4-Chōme
+万世線,ja,万世線
+万世線,en,Bansei Line
+万世線（直行便）,ja,万世線（直行便）
+万世線（直行便）,en,Bansei Line
+市街地循環路線（右回り）,ja,市街地循環路線（右回り）
+市街地循環路線（右回り）,en,Junkan Line
+市街地循環路線（左回り）,ja,市街地循環路線（左回り）
+市街地循環路線（左回り）,en,Junkan Line

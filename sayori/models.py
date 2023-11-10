@@ -114,6 +114,25 @@ class Feed(pydantic.BaseModel):
         })
 
     @classmethod
+    def from_csv(
+        cls, 
+        feed_path: FeedPath
+    ) -> "Feed":
+        
+        stops = pd.read_csv(feed_path.stops)
+        stop_times = pd.read_csv(feed_path.stop_times)
+        trips = pd.read_csv(feed_path.trips)
+        transfers = pd.read_csv(feed_path.transfers)
+        calendar = pd.read_csv(feed_path.calendar)
+       
+        stops = Stops.validate(stops)
+        stop_times = StopTimes.validate(stop_times)
+        trips = Trips.validate(trips)
+        transfers = Transfers.validate(transfers)
+        calendar = Calendar.validate(calendar)
+
+
+    @classmethod
     def from_feed_path(cls, feed_path: FeedPath) -> "Feed":
         stops = pd.read_parquet(feed_path.stops)
         stop_times = pd.read_parquet(feed_path.stop_times)

@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+7000020062022,米沢市,https://www.city.yonezawa.yamagata.jp/2559.html,Asia/Tokyo,ja,0238-22-5111,,
