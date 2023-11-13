@@ -52,7 +52,9 @@ class Transfers(pa.SchemaModel):
     from_stop_id: Series[str] = pa.Field(nullable = False)
     to_stop_id: Series[str] = pa.Field(nullable = False)
     transfer_type: Series[pa.Int32] = pa.Field(nullable = False, isin = [0, 1, 2, 3])
-    min_transfer_time: Series[pa.Int32] = pa.Field(nullable = False, gt = 0)
+    min_transfer_time: Series[pa.Int32] = pa.Field(
+        # nullable = False, gt = -101
+    )
 
 class TimeToStop(pydantic.BaseModel):
     time_to_reach: int = 0
