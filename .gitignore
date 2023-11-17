@@ -164,3 +164,7 @@ debug/
 original_data/
 raptor_data*/
 debug*.py
+transfers.csv
+ods.csv
+linakges_jr.csv
+result.json
