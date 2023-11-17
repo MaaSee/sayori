@@ -214,7 +214,7 @@ def add_footpath_transfers(
         # only update if currently inaccessible or faster than currrent option
         for arrive_stop_id, transfers_cost in zip(feed.transfers[feed.transfers["from_stop_id"] == stop_id]["to_stop_id"], feed.transfers[feed.transfers["from_stop_id"] == stop_id]["min_transfer_time"]):
             # time to reach new nearby stops is the transfer cost plus arrival at last stop
-            arrive_time_adjusted = stop_state.get_time_to_reach(stop_id)  + transfers_cost
+            arrive_time_adjusted = stop_state.get_time_to_reach(stop_id) + transfers_cost
             routing_path = [stop_id, arrive_stop_id]
 
             if is_reverse_search:
@@ -296,7 +296,7 @@ def search_p2p_geojson(feed: Feed, req: Dict[str, Optional[Union[str, int]]]) ->
     specified_secs = request_paremeters.specified_secs
     transfers_limit = request_paremeters.transfers_limit
     is_reverse_search = request_paremeters.is_reverse_search
-    available_trip_ids = request_paremeters.available_trip_ids
+    available_trip_ids = request_paremeters.available_trip_ids          
 
     # run raptor argolithum
     tic = time.perf_counter()
