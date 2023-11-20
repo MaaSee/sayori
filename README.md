@@ -4,14 +4,14 @@ A raptor based public transportation routing engine.
 
 ## Tutorial
 You should specify GTFS file used for sayori backend file. The GTFS should be converted to sayori backend data model.
-Run pre_sayori script with the GTFS zipfile as follows. You can choose both on the local directory zipfile and on the http protocol zipfile.
+Run presayori script with the GTFS zipfile as follows. You can choose both on the local directory zipfile and on the http protocol zipfile.
 
 ```
 # For local directory
-poetry run python ./pre_sayori/pre_sayori__gtfs.py ./demo/input_data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
+poetry run python ./presayori/presayori_gtfs.py ./demo/input_data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
 
 # For http protocol
-poetry run python ./pre_sayori/pre_sayori__gtfs.py https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
+poetry run python ./presayori/presayori_gtfs.py https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
 ```
 
 Once you got a dataset of sayori backend model, you can run demo script and get isochrone geojson data.

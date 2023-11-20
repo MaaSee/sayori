@@ -280,7 +280,7 @@ def read_gtfs_feed(fp: str):
     return gtfs_feeds
 
 
-def main(filepath, output_path, stop_id_seperator):
+def gtfs_to_sayori(filepath, output_path, stop_id_seperator):
     gtfs_agency, gtfs_routes, gtfs_trips, gtfs_stop_times, gtfs_stops, gtfs_calendar, gtfs_calendar_dates = read_gtfs_feed(filepath)
 
     intermidiate_timetables = (
@@ -363,6 +363,6 @@ if __name__ == "__main__":
     output_path = args.output_path
     stop_id_seperator = args.stop_id_seperator
 
-    main(filepath, output_path, stop_id_seperator)
+    gtfs_to_sayori(filepath, output_path, stop_id_seperator)
 
 # %%
