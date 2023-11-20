@@ -2,31 +2,26 @@
 
 A raptor based public transportation routing engine.
 
-## Preparation
-
-Set data path of public transportation timetable data in .env file.
-A preferable feed data structure is configurated with allocating "raptor_data" directory as a root directory.
-Then deploy some directories by data types. A data format should be parquet format. 
-An example of directory structure is shown below:
+# Tutorial
+You should specify GTFS file used for sayori backend file. The GTFS should be converted to sayori backend data model.
+Run pre_sayori script with the GTFS zipfile as follows. You can choose both on the local directory zipfile and on the http protocol zipfile.
 
 ```
-.
-├── raptor_data
-.   ├── calendar
-.   │   └── calendar_<prefix>.parquet
-.   ├── stop_times
-    │   └── stop_times_<prefix>.parquet
-    ├── stops
-    │   └── stops_<prefix>.parquet
-    ├── transfers
-    │   └── transfers_<prefix>.parquet
-    ├── trips
-    │    └── trips_<prefix>.parquet
-    └── routes
-         └── routes_<prefix>.parquet
+# For local directory
+poetry run python ./pre_sayori/pre_sayori__gtfs.py ./demo/input_data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
+
+# For http protocol
+poetry run python ./pre_sayori/pre_sayori__gtfs.py https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
 ```
 
-## Execution
+Once you got a dataset of sayori backend model, you can run demo script and get isochrone geojson data.
+
+```
+poetry run python ./demo/sayori_main.py 
+```
+
+
+## Functions
 
 ### Point to point route search
 
@@ -114,3 +109,5 @@ res = search_p2p_geojson(feed, req)
     ]
 }
 ```
+
+
