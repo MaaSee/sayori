@@ -359,9 +359,9 @@ if __name__ == "__main__":
     parser.add_argument("--stop_id_seperator", help="""Set stop_id seperator string  e.g.) - """)
     args = parser.parse_args()
 
-    filepath = args.filepath # 
-    output_path = args.output_path # "."
-    stop_id_seperator = args.stop_id_seperator # "-"
+    filepath = args.filepath
+    output_path = args.output_path
+    stop_id_seperator = args.stop_id_seperator
 
     main(filepath, output_path, stop_id_seperator)
 
