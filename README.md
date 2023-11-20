@@ -2,7 +2,7 @@
 
 A raptor based public transportation routing engine.
 
-# Tutorial
+## Tutorial
 You should specify GTFS file used for sayori backend file. The GTFS should be converted to sayori backend data model.
 Run pre_sayori script with the GTFS zipfile as follows. You can choose both on the local directory zipfile and on the http protocol zipfile.
 
@@ -21,15 +21,13 @@ poetry run python ./demo/sayori_main.py
 ```
 
 
-## Functions
+## Function
 
-### Point to point route search
+### search_p2p_geojson
 
 Point to point route search is simple routing between two points. 
 
 #### Paremeters
-
-There are seven request fields to execute point to point route search. 
 
 | field name | data type | default | descriptions |
 |----|----|----|----|
@@ -53,8 +51,10 @@ GeoJSON string is returned. This GeoJSON feature represents for routing path wit
 | features[].geometry.coordinates | A sequence of longitude and latitude pairs are assgined. |
 | features[].properties.time_to_reach | An estimated duration of desinated point to point. |
 | features[].properties.routing_path | A sequence of stop_ids, which represents the way of routing path. |
-| features[].properties.preceding | The trip_ids used by route search. |
-| features[].properties.stop_id | A final reached stop_id as a result of routing. |
+| features[].properties.routing_path_optional | A sequence of routing path details, which is like stop_times schema. |
+| features[].properties.routing_path_optional[].trip_id | A trip_id used in this search result. |
+| features[].properties.routing_path_optional[].stop_sequence | A stop sequence on the way of this route search result.  |
+| features[].properties.routing_path_optional[].stop_id |  A stop_id on the way of this route search result. |
 
 #### Example
 
@@ -81,33 +81,68 @@ req = {
 res = search_p2p_geojson(feed, req)
 ```
 
+### search_p2p_path
+#### Paremeters
 
-```json
-// A GeoJSON returns sample
-{
-    "type": "FeatureCollection", 
-    "features": [
-        {
-            "type": "Feature", 
-            "geometry": {
-                "type": "LineString", 
-                "coordinates": [
-                    [130.522563, 33.496030000000005], 
-                    [130.542415, 33.471615], 
-                    [130.51788499999998, 33.502145], 
-                    [130.532605, 33.484025], 
-                    [130.55295999999998, 33.462810000000005]
-                ]
-            }, 
-            "properties": {
-                "time_to_reach": 1610, 
-                "routing_path": ["0120_5", "0125_1", "0130_1", "0140_1", "0150_2"], 
-                "preceding": ["A083", "2071", "G363", "2063", "1051"], 
-                "stop_id": "0150_2"
-            }
-        }
-    ]
-}
-```
+There are seven request fields to execute point to point route search. 
+
+| field name | data type | default | descriptions |
+|----|----|----|----|
+| origin_stop_ids | List[str] | | List of stop_ids of origin point |
+| destination_stop_ids | List[str] | | List of stop_id of destination point |
+| specified_date | str | | A spacific date of route search. The format should be comformed to ISO8601 string |
+| specified_secs | int | | A specific seconds of route seach |
+| transfers_limit | int | | An upper limit of route search round |
+| is_reverse_search | bool | False | Set True when execute destination oriented route search |
+| available_trip_ids | Optional[List[str]] | None | Set a list of trip_id when execute route search with limited trip_ids |
+
+#### Returns
+
+GeoJSON string is returned. This GeoJSON feature represents for routing path with time to reach.
+
+| field name | description | 
+|----|----|
+| time_to_reach | An estimated duration of desinated point to point. |
+| routing_path | A sequence of stop_ids, which represents the way of routing path. |
+| routing_path_optional | A sequence of routing path details, which is like stop_times schema. |
+| routing_path_optional[].trip_id | A trip_id used in this search result. |
+| routing_path_optional[].stop_sequence | A stop sequence on the way of this route search result.  |
+| routing_path_optional[].stop_id |  A stop_id on the way of this route search result. |
+
+#### Example
+TBA
 
 
+### search_isochrones
+
+#### Paremeters
+
+There are seven request fields to execute point to point route search. 
+
+| field name | data type | default | descriptions |
+|----|----|----|----|
+| origin_stop_ids | List[str] | | List of stop_ids of origin point |
+| specified_date | str | | A spacific date of route search. The format should be comformed to ISO8601 string |
+| specified_secs | int | | A specific seconds of route seach |
+| transfers_limit | int | | An upper limit of route search round |
+| is_reverse_search | bool | False | Set True when execute destination oriented route search |
+| available_trip_ids | Optional[List[str]] | None | Set a list of trip_id when execute route search with limited trip_ids |
+
+#### Returns
+
+GeoJSON string is returned. This GeoJSON feature represents for routing path with time to reach.
+
+| field name | description | 
+|----|----|
+| type | "FeatureCollection". See RFC7946. |
+| features[].type | "Feature". See RFC7946. |
+| features[].geometry.type | "Point" | 
+| features[].geometry.coordinates | A longitude and latitude pairs for a point are assgined. |
+| features[].properties.date | The date user inputted in specified data in search parameters. |
+| features[].properties.stop_id | A final reached stop_id as a result of routing. |
+| features[].properties.stop_name | A human readable name of final reached stop_id. |
+| features[].properties.time_to_reach | An estimated duration of desinated point to point. The units is second. |
+| features[].properties.routing_path | A sequence of stop_ids, which represents the way of routing path. |
+
+#### Example
+TBA
