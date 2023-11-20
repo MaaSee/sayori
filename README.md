@@ -17,7 +17,7 @@ poetry run python ./presayori/presayori_gtfs.py https://api-public.odpt.org/api/
 Once you got a dataset of sayori backend model, you can run demo script and get isochrone geojson data.
 
 ```
-poetry run python ./demo/sayori_main.py 
+poetry run python ./demo/demossayori_isochrones.py 
 ```
 
 
