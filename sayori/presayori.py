@@ -103,7 +103,7 @@ def get_stops(timetables: pl.DataFrame, stop_id_seperator: str = " ") -> pl.Data
     """stopsの作成"""
     sayori_stops = (
         timetables
-        .groupby(["stop_id", "stop_name",  "location_type", "agency_id"])
+        .group_by(["stop_id", "stop_name",  "location_type", "agency_id"])
         .agg(
             pl.col("parent_station"),
             pl.col("platform_code"),
@@ -212,7 +212,7 @@ def get_calendar(
 
     sayori_calendar = (
         sayori_calendar
-        .groupby(["calendar_date", "agency_id"])
+        .group_by(["calendar_date", "agency_id"])
         .agg(pl.col("service_id").alias("service_ids"))
     )
 
@@ -314,7 +314,7 @@ def gtfs(filepath, output_path, stop_id_seperator):
             "friday",
             "saturday",
             "sunday",
-            pl.date_range(
+            pl.date_ranges(
                 pl.col("start_date").str.to_date(format="%Y%m%d"),
                 pl.col("end_date").str.to_date(format="%Y%m%d"),
                 "1d"

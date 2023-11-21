@@ -17,12 +17,12 @@ leafmap = "^0.21.3"
 pandera = "^0.15.1"
 streamlit = "^1.23.1"
 httpx = "^0.25.1"
+polars = "^0.19.15"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
 ipykernel = "^6.23.1"
-polars = "^0.18.2"
 
 [build-system]
 requires = ["poetry-core"]
