@@ -8,10 +8,10 @@ Run presayori script with the GTFS zipfile as follows. You can choose both on th
 
 ```
 # For local directory
-poetry run python ./presayori/presayori_gtfs.py ./demo/input_data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
+poetry run python ./sayori/presayori.py ./demo/input_data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
 
 # For http protocol
-poetry run python ./presayori/presayori_gtfs.py https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
+poetry run python ./sayori/presayori.py https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip ./demo/ --stop_id_seperator -
 ```
 
 Once you got a dataset of sayori backend model, you can run demo script and get isochrone geojson data.
