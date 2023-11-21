@@ -16,6 +16,7 @@ streamlit-folium = "^0.12.0"
 leafmap = "^0.21.3"
 pandera = "^0.15.1"
 streamlit = "^1.23.1"
+httpx = "^0.25.1"
 
 
 [tool.poetry.group.dev.dependencies]
