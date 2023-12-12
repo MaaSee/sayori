@@ -248,6 +248,9 @@ def read_gtfs_feed(fp: str):
                             gtfs_feed["route_long_name"] = None
                         elif "route_short_name" not in cols:
                             gtfs_feed["route_short_name"] = None
+                        
+                        if "route_desc" not in cols:
+                            gtfs_feed["route_desc"] = None
                     
                     elif filename == "stops.txt":
                         if "parent_station" not in cols:
