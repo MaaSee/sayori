@@ -241,6 +241,18 @@ def read_gtfs_feed(fp: str):
                 for filename in required_feeds:
                     file = z.open(filename, "r")
                     gtfs_feed = pd.read_csv(file, dtype = str)
+
+                    cols = gtfs_feed.columns
+                    if filename == "routes.txt":
+                        if "route_long_name" not in cols:
+                            gtfs_feed["route_long_name"] = None
+                        elif "route_short_name" not in cols:
+                            gtfs_feed["route_short_name"] = None
+                    
+                    elif filename == "stops.txt":
+                        if "parent_station" not in cols:
+                            gtfs_feed["parent_station"] = None
+
                     gtfs_feeds.append(pl.from_pandas(gtfs_feed)) 
             else:
                 missing_feeds = set(required_feeds) - set(filenames)
