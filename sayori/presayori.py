@@ -112,7 +112,7 @@ def get_stops(timetables: pl.DataFrame, stop_id_seperator: str = " ") -> pl.Data
         )
         .with_columns(
             pl.when(pl.col("platform_code").list.len() > 0).then(pl.col("platform_code").list.first())
-              .otherwise(pl.col("platform_code"))
+              .otherwise(pl.lit(None).cast(str))
               .alias("platform_code"),
             pl.when(pl.col("parent_station").is_null()).then(pl.col("stop_id").str.split(stop_id_seperator).list.get(0))
             .otherwise(pl.col("parent_station"))
