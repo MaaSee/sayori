@@ -105,7 +105,7 @@ def get_stops(timetables: pl.DataFrame, stop_id_seperator: str = " ") -> pl.Data
         timetables
         .group_by(["stop_id", "stop_name",  "location_type", "agency_id"])
         .agg(
-            pl.col("parent_station"),
+            pl.col("parent_station").first(),
             pl.col("platform_code").first(),
             pl.col("stop_lat"),
             pl.col("stop_lon"),
@@ -216,14 +216,13 @@ def get_transfers(sayori_stops, min_transfer_time: int = 1):
     
     sayori_transfers = ( 
         stops
-        .join(stops, on="stop_id", how="cross")
-        .filter(pl.col("parent_station") == pl.col("parent_station_right"))
-        .select([
+        .join(stops, on="parent_station", how="inner")
+        .select(
             pl.col("stop_id").alias("from_stop_id"),
             pl.col("stop_id_right").alias("to_stop_id"),
             pl.lit(0).cast(pl.Int32).alias("transfer_type"),
             pl.lit(min_transfer_time).cast(pl.Int32).alias("min_transfer_time"),
-        ])
+        )
     )
     return sayori_transfers
 
