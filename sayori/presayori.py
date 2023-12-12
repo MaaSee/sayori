@@ -255,6 +255,9 @@ def read_gtfs_feed(fp: str):
                     elif filename == "stops.txt":
                         if "parent_station" not in cols:
                             gtfs_feed["parent_station"] = None
+                        
+                        if "platform_code" not in cols:
+                            gtfs_feed["platform_code"] = None
 
                     gtfs_feeds.append(pl.from_pandas(gtfs_feed)) 
             else:
