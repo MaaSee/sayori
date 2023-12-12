@@ -356,7 +356,7 @@ def gtfs(filepath, output_path, stop_id_seperator):
         sayori_models["calendar"] = get_calendar(intermidiate_timetables, intermidiate_calendar)
 
     if not os.path.exists(f"{output_path}sayori_models/"):
-        os.mkdir(f"{output_path}sayori_models/")
+        os.makedirs(f"{output_path}sayori_models/")
     for sayori_model_name, sayori_model in sayori_models.items():
         sayori_model.write_parquet(f"{output_path}sayori_models/sayori_{sayori_model_name}.parquet")
 
