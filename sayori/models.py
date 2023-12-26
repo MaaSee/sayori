@@ -33,8 +33,8 @@ class StopTimes(pa.SchemaModel):
     trip_id: Series[str] = pa.Field(nullable=False)
     stop_sequence: Series[pa.Int64] = pa.Field(nullable=False)
     stop_id: Series[str] = pa.Field(nullable=False)
-    arrival_time: Series[pa.Int32] = pa.Field(nullable=True)
-    departure_time: Series[pa.Int32] = pa.Field(nullable=True)
+    arrival_time: Series[pa.Int32] = pa.Field(nullable=False)
+    departure_time: Series[pa.Int32] = pa.Field(nullable=False)
     pickup_type: Series[pa.Int32] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
     drop_off_type: Series[pa.Int32] = pa.Field(nullable = True, isin = [0, 1, 2, 3])
 
